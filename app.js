@@ -16,6 +16,7 @@ function initApp () {
     // Database connection
     var db = require('./config/db');
     configureExpress(app);
+    loadControllers(app);
     startApp(app);
     module.exports = app;
 }
@@ -24,6 +25,10 @@ function configureExpress (app) {
     app.disable('x-powered-by');
     app.use(express.compress());
     app.use(express.bodyParser());
+}
+
+function loadControllers (app) {
+        require('./controllers/api')(app);
 }
 
 function startApp (app) {
