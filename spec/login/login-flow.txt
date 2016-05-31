@@ -1,0 +1,28 @@
+title Log In Flow
+
+participant Client App as m
+participant Plate Planner API as a
+participant Authentication Provider (Facebook) as p
+
+m->a: GET /authorize
+a->m: 302 Found
+m->p: GET /oauth?response_type=code...
+p->m: 200 OK + auth code
+m->a: POST /token?code={auth code}
+a->p: GET /access_token?code={auth code}
+p->a: 200 + access token
+note right of a:
+API generates a 'Plate Planner' token
+and attaches facebook token.
+end note
+a->m: 200 + PP access token
+
+note right of m:
+Protected resources can now be
+accessed using this bearer token.
+For example:
+end note
+
+m->a: GET /users/me
+note right of m: Authorization: Bearer {PP access token}
+a->m: 200 OK

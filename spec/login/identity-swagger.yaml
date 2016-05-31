@@ -1,0 +1,197 @@
+#This file can be viewed with http://editor.swagger.io
+swagger: '2.0'
+info:
+  title: Plate Planner API
+  description: API Services for the Plate Planner App. See hack-weekend.com for more info.
+  version: "0.0.1"
+# the domain of the service
+host: api.hack-weekend.com
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /authorize:
+    get:
+      summary: Authorize Endpoint
+      description: |
+       The Plate Planner Identity API supports the Authorization Code grant type, defined as part of OAuth 2.0. Facebook is currently the only supported Authorization Server.
+        https://tools.ietf.org/html/rfc6749#section-4.1
+      parameters:
+        - name: client_id
+          in: query
+          description: Client Id
+          required: true
+          type: string
+        - name: redirect_uri
+          in: query
+          description: Redirect URI
+          required: true
+          type: string
+        - name: response_type
+          in: query
+          description: Response Type
+          required: true
+          type: string
+        - name: state
+          in: query
+          description: State
+          required: true
+          type: string
+        - name: scope
+          in: query
+          description: Scope
+          required: true
+          type: string
+      tags:
+        - Identity
+      responses:
+        302:
+          description: Redirect to Authorization Server Login Screen (https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow#login)
+        400:
+          description: |
+            * invalid_request - The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.
+            * unsupported_response_type - The authorization server does not support obtaining an authorization code using this method.
+            * invalid_scope - The requested scope is invalid, unknown, or malformed.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+        401:
+          description: |
+            * unauthorized_client - The client is not authorized to request an authorization code using this method.
+            * access_denied - The resource owner or authorization server denied the request.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+        500:
+          description: |
+            * server_error - The authorization server encountered an unexpected condition that prevented it from fulfilling the request.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        503:
+          description: |
+            * temporarily_unavailable - The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /token:
+    post:
+      summary: Get Access Token
+      description: |
+       The Plate Planner Identity API supports the Authorization Code grant type, defined as part of OAuth 2.0. Facebook is currently the only supported Authorization Server.
+        https://tools.ietf.org/html/rfc6749#section-4.1.3
+      parameters:
+        - name: client_id
+          in: query
+          description: Client Id
+          required: true
+          type: string
+        - name: redirect_uri
+          in: query
+          description: Redirect URI
+          required: true
+          type: string
+        - name: grant_type
+          in: query
+          description: Grant Type
+          required: true
+          type: string
+        - name: code
+          in: query
+          description: Authorization Code
+          required: true
+          type: string
+      tags:
+        - Identity
+      responses:
+        200:
+          description: Access Token info
+          schema:
+            $ref: '#/definitions/TokenResponse'
+        400:
+          description: |
+           * invalid_request - The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.
+           * invalid_grant - The provided authorization grant or refresh token is invalid, expired, revoked, does not match the redirection URI used in the authorization request, or was issued to another client.
+           * unsupported_grant_type - The authorization grant type is not supported by the authorization server.
+           * invalid_scope - The requested scope is invalid, unknown, or malformed.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: |
+           * invalid_client - Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method).
+           * unauthorized_client - The client is not authorized to request an authorization code using this method.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        500:
+          description: Internal server error.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /me:
+    get:
+      summary: My Details
+      description: |
+        Endpoint to return the User Id and House Id for a logged in user.
+      parameters:
+        - name: Authorization
+          in: header
+          description: Bearer Token
+          required: true
+          type: string
+      tags:
+        - Identity
+      responses:
+        200:
+          description: Logged in User Data
+          schema:
+            $ref: '#/definitions/ProfileResponse'
+        401:
+          description: This user is not authorized.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        500:
+          description: Internal server error.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+definitions:
+  TokenResponse:
+    type: object
+    properties:
+      access_token:
+        type: string
+      token_type:
+        type: string
+      expires_in:
+        type: integer
+        format: int32
+      refresh_token:
+        type: string
+      scope:
+        type: string
+
+  ProfileResponse:
+    type: object
+    properties:
+      facebookId:
+        type: integer
+        format: int32
+      userId:
+        type: string
+      houseId:
+        type: string
+
+  ErrorResponse:
+    type: object
+    properties:
+      error:
+        type: string
+        description: A machine readable error code.
+      error_description:
+        type: string
+        description: A human readable error message.
+      error_uri:
+        type: string
+        description: URL to the relevant documentation.
