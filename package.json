@@ -15,6 +15,6 @@
 		"cucumber": "^0.9.5"
 	},
 	"scripts": {
-		"test": "cucumber-js tests/"
+		"test": "cucumber-js tests/ --tags ~@WorkInProgress"
 	}
 }
