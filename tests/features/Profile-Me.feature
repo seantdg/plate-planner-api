@@ -1,3 +1,4 @@
+@WorkInProgress
 Feature: As an API consumer I want to access my profile details so that I can check my logged in status and if I have been registered to a house in Plate Planner
 
 	Scenario: I successful retrieve my profile

@@ -1,3 +1,4 @@
+@WorkInProgress
 Feature: As an API Consumer I want to authorize my application so that the Client application can log in directly with an authorization server
 
 	Scenario: I successfully authorize
