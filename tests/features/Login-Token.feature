@@ -49,7 +49,7 @@ Feature: As an API consumer I want to obtain an access token so that I can use p
 		Given I set Authorization header to Basic `client_auth_basic`   
 		And I set body to redirect_uri=`valid_redirect_uri`&grant_type=code&code=invalid
 		Then response code should be 400
-		And the response body path $.error should be invalid_grant
+		And response body path $.error should be invalid_grant
 
 	Scenario: I fail to request an access token with an expired authorization code
 		Given I set Authorization header to Basic `client_auth_basic`   

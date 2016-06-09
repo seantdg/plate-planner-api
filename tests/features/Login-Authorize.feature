@@ -11,7 +11,7 @@ Feature: As an API Consumer I want to authorize my application so that the Clien
 			| scope			| public_profile		|
 		When I GET /authorize
 		Then response code should be 302
-		And Location header should be (.*)
+		And response header Location should be (.*)
 
 	Scenario: I fail to authorize with an invalid client id
 		Given I set query parameters to
@@ -103,7 +103,7 @@ Feature: As an API Consumer I want to authorize my application so that the Clien
 			| scope			| public_profile		|
 		When I GET /authorize
 		Then response code should be 302
-		And Location header should be (.*)
+		And response header Location should be (.*)
 
 	Scenario: I fail to authorize with an invalid scope
 		Given I set query parameters to
@@ -127,7 +127,7 @@ Feature: As an API Consumer I want to authorize my application so that the Clien
 			| scope			| public_profile		|
 		When I GET /authorize
 		Then response code should be 302
-		And Location header should be (.*)
+		And response header Location should be (.*)
 
 	Scenario: I fail to authorize with a forbidden scope
 		Given I set query parameters to
@@ -150,5 +150,5 @@ Feature: As an API Consumer I want to authorize my application so that the Clien
 			| state			| `uuid`				|
 		When I GET /authorize
 		Then response code should be 302
-		And Location header should be (.*)
+		And response header Location should be (.*)
 
